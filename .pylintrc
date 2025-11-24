@@ -1,0 +1,58 @@
+# Pylint Configuration for Website Blocker
+
+[MASTER]
+# Add src directory to Python path
+init-hook='import sys; sys.path.append("src")'
+
+# Files or directories to skip
+ignore=CVS,.git,__pycache__,build,dist
+
+# Use multiple processes for faster checks
+jobs=4
+
+[MESSAGES CONTROL]
+# Disable specific warnings
+disable=
+    C0111,  # missing-docstring
+    C0103,  # invalid-name
+    R0903,  # too-few-public-methods
+    R0913,  # too-many-arguments
+    W0212,  # protected-access
+    C0301,  # line-too-long (handled by black)
+    R0801,  # duplicate-code (tests may have similar structure)
+
+[FORMAT]
+# Maximum line length
+max-line-length=100
+
+# String quote preference
+string-quote=double
+
+[DESIGN]
+# Maximum number of arguments
+max-args=7
+
+# Maximum number of attributes
+max-attributes=10
+
+# Maximum number of locals
+max-locals=20
+
+[BASIC]
+# Good variable names
+good-names=i,j,k,ex,Run,_,f,ip
+
+# Regular expressions for variable names
+variable-rgx=[a-z_][a-z0-9_]{1,30}$
+
+[IMPORTS]
+# Allow wildcard imports in __init__ files
+allow-wildcard-with-all=yes
+
+[SIMILARITIES]
+# Minimum lines number of a similarity
+min-similarity-lines=10
+
+[TYPECHECK]
+# List of members which are set dynamically
+generated-members=REQUEST,acl_users,aq_parent

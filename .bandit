@@ -1,0 +1,12 @@
+exclude_dirs:
+  - /tests
+  - /htmlcov
+  - /.git
+  - /__pycache__
+
+skips:
+  - B404
+  - B603
+  - B607
+
+confidence_level: MEDIUM

@@ -1,0 +1,30 @@
+# Coverage Configuration
+
+[run]
+source = src
+omit =
+    */tests/*
+    */test_*
+    */__pycache__/*
+    */site-packages/*
+    */dist-packages/*
+branch = True
+
+[report]
+# Precision for coverage percentage
+precision = 2
+
+# Show missing lines
+show_missing = True
+
+# Skip covered files
+skip_covered = False
+
+# Sort by coverage percentage
+sort = Cover
+
+# Fail if coverage is below threshold
+fail_under = 40
+
+[html]
+directory = htmlcov
