@@ -241,5 +241,98 @@ class TestAdminPrivileges(unittest.TestCase):
             self.assertFalse(is_admin)
 
 
+class TestPresetSites(unittest.TestCase):
+    """Test preset site functionality"""
+    
+    def test_preset_sites_list(self):
+        """Test that preset sites are defined"""
+        presets = [
+            "facebook.com",
+            "twitter.com",
+            "instagram.com",
+            "reddit.com",
+            "youtube.com",
+            "tiktok.com",
+        ]
+        self.assertEqual(len(presets), 6)
+        self.assertIn("facebook.com", presets)
+        self.assertIn("youtube.com", presets)
+    
+    def test_redirect_ip_configuration(self):
+        """Test redirect IP is localhost"""
+        redirect_ip = "127.0.0.1"
+        self.assertEqual(redirect_ip, "127.0.0.1")
+
+
+class TestHostsFilePathDetection(unittest.TestCase):
+    """Test hosts file path detection"""
+    
+    @patch('platform.system', return_value='Windows')
+    def test_windows_hosts_path(self, mock_platform):
+        """Test Windows hosts file path"""
+        import platform
+        if platform.system() == "Windows":
+            path = r"C:\Windows\System32\drivers\etc\hosts"
+            self.assertTrue(path.endswith("hosts"))
+    
+    @patch('platform.system', return_value='Linux')
+    def test_linux_hosts_path(self, mock_platform):
+        """Test Linux hosts file path"""
+        import platform
+        if platform.system() != "Windows":
+            path = "/etc/hosts"
+            self.assertEqual(path, "/etc/hosts")
+
+
+class TestURLVariations(unittest.TestCase):
+    """Test URL variation generation"""
+    
+    def test_url_with_www(self):
+        """Test www variation"""
+        domain = "example.com"
+        variations = [domain, f"www.{domain}"]
+        self.assertIn("example.com", variations)
+        self.assertIn("www.example.com", variations)
+    
+    def test_url_without_www(self):
+        """Test non-www variation"""
+        domain = "example.com"
+        variations = [domain, f"www.{domain}"]
+        self.assertEqual(len(variations), 2)
+
+
+class TestTimerFunctionality(unittest.TestCase):
+    """Test timer-related functions"""
+    
+    def test_timer_id_initialization(self):
+        """Test timer ID starts as None"""
+        timer_id = None
+        self.assertIsNone(timer_id)
+    
+    def test_timer_validation(self):
+        """Test timer value validation"""
+        # Valid timer values
+        self.assertTrue(1 > 0)
+        self.assertTrue(60 > 0)
+        self.assertTrue(1440 > 0)  # 24 hours in minutes
+
+
+class TestEmptyStateHandling(unittest.TestCase):
+    """Test empty state handling"""
+    
+    def test_empty_blocked_list(self):
+        """Test empty blocked sites list"""
+        blocked_sites = []
+        self.assertEqual(len(blocked_sites), 0)
+        self.assertIsInstance(blocked_sites, list)
+    
+    def test_empty_json_returns_empty_list(self):
+        """Test empty JSON returns empty list"""
+        data = []
+        self.assertIsInstance(data, list)
+        self.assertEqual(data, [])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+

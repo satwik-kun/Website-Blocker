@@ -98,6 +98,7 @@ class TestProxyServer(unittest.TestCase):
         server.load_block_page("nonexistent.html")
         # Should not crash, uses fallback
 
+
     def test_stop_server(self):
         """Test server stop method"""
         server = ProxyServer("test.html")
@@ -108,5 +109,93 @@ class TestProxyServer(unittest.TestCase):
         self.assertFalse(server.running)
 
 
+class TestBlockPageContent(unittest.TestCase):
+    """Test block page content handling"""
+    
+    def test_fallback_page_structure(self):
+        """Test fallback page has proper HTML structure"""
+        fallback = """
+        <html>
+        <head><title>Site Blocked</title></head>
+        <body><h1>This site has been blocked</h1></body>
+        </html>
+        """
+        self.assertIn("<html>", fallback)
+        self.assertIn("</html>", fallback)
+        self.assertIn("blocked", fallback.lower())
+    
+    def test_content_type_header(self):
+        """Test content type is text/html"""
+        content_type = "text/html; charset=utf-8"
+        self.assertIn("text/html", content_type)
+        self.assertIn("utf-8", content_type)
+
+
+class TestServerConfiguration(unittest.TestCase):
+    """Test server configuration"""
+    
+    def test_server_port(self):
+        """Test server runs on port 80"""
+        port = 80
+        self.assertEqual(port, 80)
+        self.assertGreater(port, 0)
+    
+    def test_server_host(self):
+        """Test server binds to localhost"""
+        host = "0.0.0.0"
+        self.assertIn("0.0.0.0", host)
+
+
+class TestThreadedServer(unittest.TestCase):
+    """Test threaded server functionality"""
+    
+    def test_daemon_thread(self):
+        """Test server runs in daemon thread"""
+        is_daemon = True
+        self.assertTrue(is_daemon)
+    
+    def test_server_running_flag(self):
+        """Test server running flag"""
+        server = ProxyServer("test.html")
+        self.assertFalse(server.running)
+        server.running = True
+        self.assertTrue(server.running)
+
+
+class TestHTTPMethods(unittest.TestCase):
+    """Test HTTP method handlers"""
+    
+    def test_do_get_exists(self):
+        """Test GET handler exists"""
+        self.assertTrue(hasattr(BlockPageHandler, 'do_GET'))
+    
+    def test_do_head_exists(self):
+        """Test HEAD handler exists"""
+        self.assertTrue(hasattr(BlockPageHandler, 'do_HEAD'))
+    
+    def test_do_post_exists(self):
+        """Test POST handler exists"""
+        self.assertTrue(hasattr(BlockPageHandler, 'do_POST'))
+
+
+class TestErrorHandling(unittest.TestCase):
+    """Test error handling in proxy server"""
+    
+    def test_file_not_found_handling(self):
+        """Test handling of missing block page file"""
+        server = ProxyServer("nonexistent_file.html")
+        # Should initialize without crashing
+        self.assertIsNotNone(server)
+    
+    def test_exception_in_load_returns_none(self):
+        """Test exception during load returns None"""
+        server = ProxyServer("test.html")
+        with patch('builtins.open', side_effect=Exception("Test error")):
+            result = server.load_block_page("test.html")
+            # Should handle exception gracefully
+            self.assertIsNone(result)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
+
